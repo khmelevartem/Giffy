@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_medium"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/result_image"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/fill"
+        android:layout_weight="1"
+        android:scaleType="center"/>
+
+    <EditText
+        android:id="@+id/query_input"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edit_text_height"
+        android:inputType="text"
+        android:maxLines="1"/>
+
+    <Button
+        android:id="@+id/button_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:text="@string/button_search" />
+
+</LinearLayout>
