@@ -1,4 +1,4 @@
-package com.example.giffy.data
+package com.example.giffy.utils
 
 import kotlinx.coroutines.CoroutineDispatcher
 

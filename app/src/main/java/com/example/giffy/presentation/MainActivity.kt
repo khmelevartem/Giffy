@@ -35,7 +35,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObservers() {
         viewModel.result.observe(this) {
-            TODO()
+            //TODO()
+            println("MainActivity $it")
         }
     }
 }

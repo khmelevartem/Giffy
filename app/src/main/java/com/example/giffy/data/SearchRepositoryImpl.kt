@@ -3,6 +3,7 @@ package com.example.giffy.data
 import com.example.giffy.domain.SearchRepository
 import com.example.giffy.models.domain.SearchRequest
 import com.example.giffy.models.domain.SearchResult
+import com.example.giffy.utils.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 
 class SearchRepositoryImpl(

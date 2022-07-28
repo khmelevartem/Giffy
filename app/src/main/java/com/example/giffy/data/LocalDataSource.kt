@@ -5,6 +5,7 @@ import com.example.giffy.models.data.SearchResultEntity
 
 class LocalDataSource : DataSource {
     override suspend fun searchGiffs(request: SearchRequest): SearchResultEntity? {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
+        return null
     }
 }

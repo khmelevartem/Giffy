@@ -1,7 +1,7 @@
 package com.example.giffy.di
 
-import com.example.giffy.data.CoroutineDispatchers
-import com.example.giffy.data.CoroutineDispatchersImpl
+import com.example.giffy.utils.CoroutineDispatchers
+import com.example.giffy.utils.CoroutineDispatchersImpl
 import com.example.giffy.data.DataSource
 import com.example.giffy.data.GiphyApiProvider
 import com.example.giffy.data.LocalDataSource
