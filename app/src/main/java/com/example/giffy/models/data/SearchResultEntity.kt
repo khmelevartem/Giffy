@@ -1,11 +1,16 @@
 package com.example.giffy.models.data
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class SearchResultEntity @JsonCreator() constructor(
+// https://developers.giphy.com/docs/api/schema
+data class SearchResultEntity @JsonCreator constructor(
     @param:JsonProperty("data")
-    val data: Any,
+    val data: List<DataItemEntity>?,
+
+    @param:JsonProperty("pagination")
+    val pagination: PaginationEntity? = null,
+
+    @param:JsonProperty("meta")
+    val meta: MetaEntity?,
 )
