@@ -1,9 +1,10 @@
 package com.example.giffy.domain
 
+import com.example.giffy.models.domain.SearchResult
+
 interface HistoryInteractor {
 
-
-    fun addToHistory(query: String)
+    fun addToHistory(query: String, result: SearchResult)
 
     /**
      * Получить последние запросы

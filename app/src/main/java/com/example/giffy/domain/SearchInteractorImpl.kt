@@ -9,15 +9,12 @@ class SearchInteractorImpl(
 
     override suspend fun searchMostRelevant(query: String): SearchResult =
         repository.search(query, single = true).also { result ->
-            addToHistoryIfNoErrors(result, query)
+            historyInteractor.addToHistory(query, result)
         }
 
     override suspend fun searchAll(query: String): SearchResult =
         repository.search(query).also { result ->
-            addToHistoryIfNoErrors(result, query)
+            historyInteractor.addToHistory(query, result)
         }
 
-    private fun addToHistoryIfNoErrors(it: SearchResult, query: String) {
-        if (it !is SearchResult.SearchError) historyInteractor.addToHistory(query)
-    }
 }

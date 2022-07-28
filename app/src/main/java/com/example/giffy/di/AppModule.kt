@@ -3,6 +3,7 @@ package com.example.giffy.di
 import com.example.giffy.data.CoroutineDispatchers
 import com.example.giffy.data.CoroutineDispatchersImpl
 import com.example.giffy.data.DataSource
+import com.example.giffy.data.GiphyApiProvider
 import com.example.giffy.data.LocalDataSource
 import com.example.giffy.data.NetworkDataSource
 import com.example.giffy.data.SearchRepositoryImpl
@@ -26,7 +27,7 @@ val appModule = module {
     single<HistoryInteractor> { HistoryInteractorImpl() }
     single<SearchRepository> { SearchRepositoryImpl(get(network), get(local), get(), get()) }
 
-    single<DataSource>(network) { NetworkDataSource() }
+    single<DataSource>(network) { NetworkDataSource(GiphyApiProvider().api) }
     single<DataSource>(local) { LocalDataSource() }
     single { SearchResultEntityConverter() }
 
