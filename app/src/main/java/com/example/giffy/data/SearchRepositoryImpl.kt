@@ -13,24 +13,13 @@ class SearchRepositoryImpl(
     private val dispatchers: CoroutineDispatchers,
 ) : SearchRepository {
 
-    override suspend fun search(query: String, single: Boolean): SearchResult = try {
-        searchInternal(query, single)?.let { result ->
-            converter.convert(result, single)
-        } ?: SearchResult.EMPTY
+    override suspend fun search(query: String, limit: Int): SearchResult = try {
+        withContext(dispatchers.io) {
+            val request = SearchRequest(query, limit)
+            val result = localSource.searchGiffs(request) ?: networkSource.searchGiffs(request)
+            converter.convert(result)
+        }
     } catch (e: Exception) {
         SearchResult.SearchError(e)
-    }
-
-    private suspend fun searchInternal(query: String, single: Boolean) =
-        withContext(dispatchers.io) {
-            val request = SearchRequest(
-                query = query,
-                limit = if (single) 1 else DEFAULT_LIMIT
-            )
-            localSource.searchGiffs(request) ?: networkSource.searchGiffs(request)
-        }
-
-    private companion object {
-        const val DEFAULT_LIMIT = 10
     }
 }
