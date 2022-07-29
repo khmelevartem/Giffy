@@ -14,6 +14,8 @@ import com.example.giffy.domain.SearchInteractor
 import com.example.giffy.domain.SearchInteractorImpl
 import com.example.giffy.domain.SearchRepository
 import com.example.giffy.presentation.MainActivityViewModel
+import com.example.giffy.utils.ConnectionChecker
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -27,9 +29,11 @@ val appModule = module {
     single<HistoryInteractor> { HistoryInteractorImpl() }
     single<SearchRepository> { SearchRepositoryImpl(get(network), get(local), get(), get()) }
 
-    single<DataSource>(network) { NetworkDataSource(GiphyApiProvider().api) }
+    single<DataSource>(network) { NetworkDataSource(GiphyApiProvider().api, get()) }
     single<DataSource>(local) { LocalDataSource() }
     single { SearchResultEntityConverter() }
 
     single<CoroutineDispatchers> { CoroutineDispatchersImpl() }
+
+    single { ConnectionChecker(androidContext()) }
 }
