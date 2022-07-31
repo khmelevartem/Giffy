@@ -1,10 +1,10 @@
-package com.example.giffy.presentation
+package com.example.giffy.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.giffy.domain.SearchInteractor
-import com.example.giffy.models.domain.Gif
 import com.example.giffy.models.domain.SearchResult
+import com.example.giffy.models.presentation.Preview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -13,15 +13,18 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MainActivityViewModel(private val interactor: SearchInteractor) : ViewModel() {
+class SearchFragmentViewModel(private val interactor: SearchInteractor) : ViewModel() {
 
-    val result: StateFlow<List<Gif>> get() = _result.asStateFlow()
-    private val _result = MutableStateFlow<List<Gif>>(emptyList())
+    val previews: StateFlow<List<Preview>> get() = _previews.asStateFlow()
+    private val _previews = MutableStateFlow<List<Preview>>(emptyList())
 
     val alert: SharedFlow<String> get() = _alert.asSharedFlow()
     private val _alert = MutableSharedFlow<String>()
 
-    fun search(query: String) {
+    private var query = ""
+
+    fun search() {
+        showShimmers()
         viewModelScope.launch {
             val result = interactor.search(query)
             when (result) {
@@ -32,8 +35,12 @@ class MainActivityViewModel(private val interactor: SearchInteractor) : ViewMode
         }
     }
 
+    private fun showShimmers() {
+        _previews.value = List(DEFAULT_SHIMMERS_COUNT) { Preview.Shimmer() }
+    }
+
     private fun showGifs(result: SearchResult.ListSearchResult) {
-        _result.value = result.images
+        _previews.value = result.images.map { Preview.Content(it) }
     }
 
     private fun showAlert(string: String?) {
@@ -42,7 +49,12 @@ class MainActivityViewModel(private val interactor: SearchInteractor) : ViewMode
         }
     }
 
+    fun setCurrentQuery(newQuery: String) {
+        query = newQuery
+    }
+
     companion object {
         const val DEFAULT_ERROR_MESSAGE = "some error"
+        const val DEFAULT_SHIMMERS_COUNT = 3
     }
 }

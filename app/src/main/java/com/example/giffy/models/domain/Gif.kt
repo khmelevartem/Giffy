@@ -1,7 +1,7 @@
 package com.example.giffy.models.domain
 
-import java.net.URI
+import android.net.Uri
 
 data class Gif(
-    val url: URI
+    val url: Uri,
 )
