@@ -12,10 +12,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/result_images"
         android:layout_width="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
         android:layout_height="@dimen/fill"
-        android:layout_weight="1" />
+        android:overScrollMode="never"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
     <EditText

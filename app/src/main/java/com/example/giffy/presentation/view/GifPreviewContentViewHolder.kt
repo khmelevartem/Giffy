@@ -7,7 +7,7 @@ import com.example.giffy.models.presentation.Preview
 
 class GifPreviewContentViewHolder(
     private val binding: ItemGifPreviewContentBinding,
-) : BaseGifPreviewViewHolder(binding.root) {
+) : BaseViewHolder(binding.root) {
     override fun setContent(preview: Preview) {
         check(preview is Preview.Content) { "Incompatible content" }
         Glide.with(itemView)

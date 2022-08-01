@@ -1,6 +1,5 @@
 package com.example.giffy.di
 
-import com.bumptech.glide.Glide
 import com.example.giffy.data.DataSource
 import com.example.giffy.data.GiphyApiProvider
 import com.example.giffy.data.LocalDataSource

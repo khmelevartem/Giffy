@@ -5,7 +5,7 @@ import com.example.giffy.models.presentation.Preview
 
 class GifPreviewShimmerViewHolder(
     binding: ItemGifPreviewShimmerBinding,
-) : BaseGifPreviewViewHolder(binding.root) {
+) : BaseViewHolder(binding.root) {
     override fun setContent(preview: Preview) {
         check(preview is Preview.Shimmer) { "Incompatible content" }
     }

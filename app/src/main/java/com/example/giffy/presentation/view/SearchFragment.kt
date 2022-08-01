@@ -11,9 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.giffy.R
 import com.example.giffy.databinding.FragmentSearchBinding
-import com.example.giffy.models.presentation.Preview
 import com.example.giffy.presentation.viewmodel.SearchFragmentViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,7 +41,6 @@ class SearchFragment : Fragment() {
     private fun initRecycler() {
         binding.resultImages.apply {
             adapter = previewsAdapter
-            itemAnimator = null
             addItemDecoration(
                 DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
                     ResourcesCompat.getDrawable(resources, R.drawable.spacer, null)?.let { setDrawable(it) }
@@ -63,23 +60,10 @@ class SearchFragment : Fragment() {
 
     private fun initObservers() {
         lifecycleScope.launchWhenStarted {
-            viewModel.previews.collectLatest {
-                setItems(it)
+            viewModel.previews.collectLatest { previews ->
+                previewsAdapter.setContent(previews)
             }
         }
-        lifecycleScope.launchWhenStarted {
-            viewModel.alert.collectLatest {
-                showAlert(it)
-            }
-        }
-    }
-
-    private fun showAlert(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun setItems(previews: List<Preview>) {
-        previewsAdapter.setContent(previews)
     }
 
     companion object {

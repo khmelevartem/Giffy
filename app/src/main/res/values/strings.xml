@@ -2,4 +2,18 @@
     <string name="app_name">Giffy</string>
 
     <string name="button_search">search</string>
+
+    <string name="button_not_started">try it now</string>
+    <string name="description_not_started">Have not tried our cool new stuff yet?</string>
+
+    <string name="button_no_internet">try again</string>
+    <string name="description_no_internet">It seems there are some connection problems.
+        Check your internet connection and try again.</string>
+
+    <string name="button_unknown_error">okay</string>
+    <string name="description_unknown_error">Something bad happened.
+        Come back in 5 minutes, we will try to cast some magic.</string>
+
+    <string name="button_nothing_found">search another</string>
+    <string name="description_nothing_found">Sorry, we have nothing like what you asked</string>
 </resources>

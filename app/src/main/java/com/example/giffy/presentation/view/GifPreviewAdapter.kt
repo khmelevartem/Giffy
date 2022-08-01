@@ -3,12 +3,13 @@ package com.example.giffy.presentation.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.giffy.databinding.ItemBannerBinding
 import com.example.giffy.databinding.ItemGifPreviewContentBinding
 import com.example.giffy.databinding.ItemGifPreviewShimmerBinding
 import com.example.giffy.models.presentation.Preview
 import com.example.giffy.models.presentation.PreviewViewTypes
 
-class GifPreviewAdapter : RecyclerView.Adapter<BaseGifPreviewViewHolder>() {
+class GifPreviewAdapter : RecyclerView.Adapter<BaseViewHolder>() {
 
     private val content: MutableList<Preview> = mutableListOf()
 
@@ -22,10 +23,13 @@ class GifPreviewAdapter : RecyclerView.Adapter<BaseGifPreviewViewHolder>() {
             PreviewViewTypes.SHIMMER -> GifPreviewShimmerViewHolder(
                 ItemGifPreviewShimmerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
+            PreviewViewTypes.BANNER -> BannerViewHolder(
+                ItemBannerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            )
             else -> throw IllegalArgumentException("unknown view type")
         }
 
-    override fun onBindViewHolder(holder: BaseGifPreviewViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         holder.setContent(content[position])
     }
 
