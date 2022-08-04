@@ -7,7 +7,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.giffy"
+        applicationId "com.tubetoast.giffy"
         minSdk 28
         targetSdk 33
         versionCode 1
