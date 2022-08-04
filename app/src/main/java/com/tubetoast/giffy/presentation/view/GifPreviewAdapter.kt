@@ -6,24 +6,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tubetoast.giffy.databinding.ItemBannerBinding
 import com.tubetoast.giffy.databinding.ItemGifPreviewContentBinding
 import com.tubetoast.giffy.databinding.ItemGifPreviewShimmerBinding
-import com.tubetoast.giffy.models.presentation.Preview
-import com.tubetoast.giffy.models.presentation.PreviewViewTypes
+import com.tubetoast.giffy.models.presentation.UIItem
+import com.tubetoast.giffy.models.presentation.ViewTypes
 
 class GifPreviewAdapter : RecyclerView.Adapter<BaseViewHolder>() {
 
-    private val content: MutableList<Preview> = mutableListOf()
+    private val content: MutableList<UIItem> = mutableListOf()
 
     override fun getItemViewType(position: Int) = content[position].viewType
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            PreviewViewTypes.CONTENT -> GifPreviewContentViewHolder(
+            ViewTypes.CONTENT -> GifPreviewContentViewHolder(
                 ItemGifPreviewContentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
-            PreviewViewTypes.SHIMMER -> GifPreviewShimmerViewHolder(
+            ViewTypes.SHIMMER -> GifPreviewShimmerViewHolder(
                 ItemGifPreviewShimmerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
-            PreviewViewTypes.BANNER -> BannerViewHolder(
+            ViewTypes.BANNER -> BannerViewHolder(
                 ItemBannerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
             else -> throw IllegalArgumentException("unknown view type")
@@ -35,9 +35,9 @@ class GifPreviewAdapter : RecyclerView.Adapter<BaseViewHolder>() {
 
     override fun getItemCount() = content.size
 
-    fun setContent(previews: List<Preview>) {
+    fun setContent(uiItems: List<UIItem>) {
         content.clear()
-        content.addAll(previews)
+        content.addAll(uiItems)
         notifyDataSetChanged() //TODO("DiffUtil")
     }
 }

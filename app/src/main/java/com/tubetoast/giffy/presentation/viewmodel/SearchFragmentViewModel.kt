@@ -6,17 +6,20 @@ import com.tubetoast.giffy.domain.SearchInteractor
 import com.tubetoast.giffy.models.data.NoContentException
 import com.tubetoast.giffy.models.data.NoInternetException
 import com.tubetoast.giffy.models.domain.SearchResult
-import com.tubetoast.giffy.models.presentation.Preview
+import com.tubetoast.giffy.models.presentation.Banner
+import com.tubetoast.giffy.models.presentation.Banners
+import com.tubetoast.giffy.models.presentation.GifPreview
+import com.tubetoast.giffy.models.presentation.UIItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SearchFragmentViewModel(private val interactor: SearchInteractor) : ViewModel(), Preview.Banner.BannerListener {
+class SearchFragmentViewModel(private val interactor: SearchInteractor) : ViewModel(), Banner.BannerListener {
 
-    val previews: StateFlow<List<Preview>> get() = _previews.asStateFlow()
-    private val _previews = MutableStateFlow<List<Preview>>(
-        listOf(Preview.NotStartedBanner(this))
+    val previews: StateFlow<List<UIItem>> get() = _previews.asStateFlow()
+    private val _previews = MutableStateFlow<List<UIItem>>(
+        listOf(Banners.NotStarted(this))
     )
 
     private var query = ""
@@ -33,23 +36,23 @@ class SearchFragmentViewModel(private val interactor: SearchInteractor) : ViewMo
     }
 
     private fun showShimmers() {
-        _previews.value = List(DEFAULT_SHIMMERS_COUNT) { Preview.Shimmer }
+        _previews.value = List(DEFAULT_SHIMMERS_COUNT) { GifPreview.Shimmer }
     }
 
     private fun showGifs(result: SearchResult.ListSearchResult) {
-        _previews.value = result.images.map { Preview.Content(it) }
+        _previews.value = result.images.map { GifPreview.Content(it) }
     }
 
     private fun showBanner(result: SearchResult.SearchError) {
         when (result.exception) {
             is NoInternetException -> _previews.value = listOf(
-                Preview.NoInternetBanner(this)
+                Banners.NoInternet(this)
             )
             is NoContentException -> _previews.value = listOf(
-                Preview.NoContentBanner(this)
+                Banners.NoContent(this)
             )
             else -> _previews.value = listOf(
-                Preview.UnknownErrorBanner()
+                Banners.UnknownError()
             )
         }
     }
@@ -60,10 +63,10 @@ class SearchFragmentViewModel(private val interactor: SearchInteractor) : ViewMo
 
     override fun onAction(type: String) {
         when (type) {
-            Preview.NoContentBanner.ACTION_TYPE -> Unit // TODO(focus on search input field)
-            Preview.NotStartedBanner.ACTION_TYPE -> Unit // TODO(focus on search input field)
-            Preview.NoInternetBanner.ACTION_TYPE -> search()
-            Preview.UnknownErrorBanner.ACTION_TYPE -> Unit //TODO(finish activity)
+            Banners.NoContent.ACTION_TYPE -> Unit // TODO(focus on search input field)
+            Banners.NotStarted.ACTION_TYPE -> Unit // TODO(focus on search input field)
+            Banners.NoInternet.ACTION_TYPE -> search()
+            Banners.UnknownError.ACTION_TYPE -> Unit //TODO(finish activity)
         }
     }
 
