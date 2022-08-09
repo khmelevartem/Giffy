@@ -1,4 +1,4 @@
-package com.tubetoast.giffy.data
+package com.tubetoast.giffy.data.network
 
 import com.tubetoast.giffy.models.data.SearchResultEntity
 import retrofit2.Response

@@ -1,4 +1,4 @@
-package com.tubetoast.giffy.data
+package com.tubetoast.giffy.data.network
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
