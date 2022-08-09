@@ -24,18 +24,23 @@ import com.tubetoast.giffy.domain.SearchRepository
 import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchResult
 import com.tubetoast.giffy.presentation.view.GifPreviewAdapter
-import com.tubetoast.giffy.presentation.viewmodel.SearchFragmentViewModel
+import com.tubetoast.giffy.presentation.view.MainActivity
+import com.tubetoast.giffy.presentation.viewmodel.ContentFragmentViewModel
+import com.tubetoast.giffy.presentation.viewmodel.SearchViewModel
 import com.tubetoast.giffy.utils.ConnectionChecker
 import com.tubetoast.giffy.utils.CoroutineDispatchers
 import com.tubetoast.giffy.utils.CoroutineDispatchersImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
 
 val appModule = module {
-    viewModel { SearchFragmentViewModel(get<SearchInteractor>()) }
+    viewModel { ContentFragmentViewModel(get<SearchInteractor>()) }
+    viewModel { SearchViewModel(get<SearchInteractor>()) }
     single { GifPreviewAdapter() }
 }
 

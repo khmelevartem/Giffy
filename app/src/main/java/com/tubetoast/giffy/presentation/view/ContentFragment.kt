@@ -5,41 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.tubetoast.giffy.R
-import com.tubetoast.giffy.databinding.FragmentSearchBinding
-import com.tubetoast.giffy.presentation.viewmodel.SearchFragmentViewModel
+import com.tubetoast.giffy.presentation.viewmodel.ContentFragmentViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment : Fragment() {
+class ContentFragment : Fragment() {
 
-    private val viewModel: SearchFragmentViewModel by viewModel()
-    private val binding: FragmentSearchBinding get() = _binding!!
-    private var _binding: FragmentSearchBinding? = null
+    private val viewModel: ContentFragmentViewModel by viewModel()
     private val previewsAdapter: GifPreviewAdapter by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ) = FragmentSearchBinding.inflate(inflater, container, false)
-        .also { _binding = it }
-        .root
+    ): View = inflater.inflate(R.layout.fragment_content, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
-        initListeners()
         initObservers()
     }
 
     private fun initRecycler() {
-        binding.resultImages.apply {
+        view?.findViewById<RecyclerView>(R.id.result_images)?.apply {
             adapter = previewsAdapter
             addItemDecoration(
                 DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
@@ -49,24 +43,15 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun initListeners() {
-        binding.queryInput.doAfterTextChanged {
-            viewModel.setCurrentQuery(it.toString())
-        }
-        binding.buttonSearch.setOnClickListener {
-            viewModel.search()
-        }
-    }
-
     private fun initObservers() {
         lifecycleScope.launchWhenStarted {
-            viewModel.previews.collectLatest { previews ->
+            viewModel.content.collectLatest { previews ->
                 previewsAdapter.setContent(previews)
             }
         }
     }
 
     companion object {
-        fun newInstance() = SearchFragment()
+        fun newInstance() = ContentFragment()
     }
 }

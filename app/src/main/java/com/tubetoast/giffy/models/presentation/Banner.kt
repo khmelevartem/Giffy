@@ -15,10 +15,10 @@ sealed class Banner(
         if (actionType.isNullOrBlank() || listener == null) {
             null
         } else {
-            { listener.onAction(actionType) }
+            { listener.onBannerAction(actionType) }
         }
 
     interface BannerListener {
-        fun onAction(type: String)
+        fun onBannerAction(type: String)
     }
 }

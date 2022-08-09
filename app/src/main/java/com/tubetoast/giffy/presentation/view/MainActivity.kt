@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, SearchFragment.newInstance())
+                .add(R.id.fragment_container, ContentFragment.newInstance())
                 .commit()
         }
     }

@@ -13,59 +13,58 @@ import com.tubetoast.giffy.models.presentation.UIItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class SearchFragmentViewModel(private val interactor: SearchInteractor) : ViewModel(), Banner.BannerListener {
+class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewModel(), Banner.BannerListener {
 
-    val previews: StateFlow<List<UIItem>> get() = _previews.asStateFlow()
-    private val _previews = MutableStateFlow<List<UIItem>>(
+    val content: StateFlow<List<UIItem>>
+        get() = _content.asStateFlow().also {
+            observeInteractor()
+        }
+    private val _content = MutableStateFlow<List<UIItem>>(
         listOf(Banners.NotStarted(this))
     )
 
-    private var query = ""
-
-    fun search() {
-        showShimmers()
+    private fun observeInteractor() {
         viewModelScope.launch {
-            val result = interactor.search(query)
-            when (result) {
-                is SearchResult.ListSearchResult -> showGifs(result)
-                is SearchResult.SearchError -> showBanner(result)
+            interactor.searchResult.collectLatest { result ->
+                when (result) {
+                    is SearchResult.Loading -> showShimmers()
+                    is SearchResult.ListSearchResult -> showContent(result)
+                    is SearchResult.SearchError -> showBanner(result)
+                }
             }
         }
     }
 
     private fun showShimmers() {
-        _previews.value = List(DEFAULT_SHIMMERS_COUNT) { GifPreview.Shimmer }
+        _content.value = List(DEFAULT_SHIMMERS_COUNT) { GifPreview.Shimmer }
     }
 
-    private fun showGifs(result: SearchResult.ListSearchResult) {
-        _previews.value = result.images.map { GifPreview.Content(it) }
+    private fun showContent(result: SearchResult.ListSearchResult) {
+        _content.value = result.images.map { GifPreview.Content(it) }
     }
 
     private fun showBanner(result: SearchResult.SearchError) {
         when (result.exception) {
-            is NoInternetException -> _previews.value = listOf(
+            is NoInternetException -> _content.value = listOf(
                 Banners.NoInternet(this)
             )
-            is NoContentException -> _previews.value = listOf(
+            is NoContentException -> _content.value = listOf(
                 Banners.NoContent(this)
             )
-            else -> _previews.value = listOf(
+            else -> _content.value = listOf(
                 Banners.UnknownError()
             )
         }
     }
 
-    fun setCurrentQuery(newQuery: String) {
-        query = newQuery
-    }
-
-    override fun onAction(type: String) {
+    override fun onBannerAction(type: String) {
         when (type) {
             Banners.NoContent.ACTION_TYPE -> Unit // TODO(focus on search input field)
             Banners.NotStarted.ACTION_TYPE -> Unit // TODO(focus on search input field)
-            Banners.NoInternet.ACTION_TYPE -> search()
+            Banners.NoInternet.ACTION_TYPE -> Unit //TODO(search)
             Banners.UnknownError.ACTION_TYPE -> Unit //TODO(finish activity)
         }
     }
