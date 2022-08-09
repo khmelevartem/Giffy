@@ -2,8 +2,12 @@ package com.tubetoast.giffy.di
 
 import com.tubetoast.giffy.data.CachedDataSource
 import com.tubetoast.giffy.data.DataSource
-import com.tubetoast.giffy.data.HistoryRepositoryImpl
 import com.tubetoast.giffy.data.SearchRepositoryImpl
+import com.tubetoast.giffy.data.StackDataStorage
+import com.tubetoast.giffy.data.history.HistoryRepositoryImpl
+import com.tubetoast.giffy.data.history.SearchHistoryDatabase
+import com.tubetoast.giffy.data.history.SearchHistoryRoomConverter
+import com.tubetoast.giffy.data.history.SearchHistoryStorage
 import com.tubetoast.giffy.data.local.LocalDataSource
 import com.tubetoast.giffy.data.local.SearchResultDatabase
 import com.tubetoast.giffy.data.local.SearchResultRoomConverter
@@ -38,13 +42,25 @@ val appModule = module {
     single<SearchInteractor> { SearchInteractorImpl(get<HistoryInteractor>(), get<SearchRepository>()) }
     single<SearchRepository> {
         SearchRepositoryImpl(
-            get<DataSource<SearchRequest, SearchResult>>(mock),
+            get<DataSource<SearchRequest, SearchResult>>(real),
             get<CachedDataSource<SearchRequest, SearchResult>>(),
             get<CoroutineDispatchers>()
         )
     }
     single<HistoryInteractor> { HistoryInteractorImpl(get<HistoryRepository>()) }
-    single<HistoryRepository> { HistoryRepositoryImpl() }
+    single<HistoryRepository> {
+        HistoryRepositoryImpl(
+            get<StackDataStorage<SearchRequest>>(),
+            get<CoroutineDispatchers>()
+        )
+    }
+    single<StackDataStorage<SearchRequest>> {
+        SearchHistoryStorage(
+            get<SearchHistoryDatabase>(),
+            SearchHistoryRoomConverter()
+        )
+    }
+    single { SearchHistoryDatabase.create(androidContext()) }
 
     single<DataSource<SearchRequest, SearchResult>>(real) {
         NetworkDataSource(
@@ -56,7 +72,8 @@ val appModule = module {
     single<CachedDataSource<SearchRequest, SearchResult>> {
         LocalDataSource(
             get<SearchResultDatabase>(),
-            get<SearchResultRoomConverter>()
+            get<SearchResultRoomConverter>(),
+            get<CoroutineDispatchers>()
         )
     }
     single { SearchResultDatabase.create(androidContext()) }

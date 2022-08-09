@@ -12,6 +12,6 @@ class HistoryInteractorImpl(
         }
     }
 
-    override fun getLast(number: Int): List<SearchRequest> =
+    override suspend fun getLast(number: Int): List<SearchRequest> =
         historyRepository.getLast(number)
 }
