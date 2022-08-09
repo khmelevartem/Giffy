@@ -33,11 +33,16 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val real = named("real")
-val mock = named("mock")
 
 val appModule = module {
     viewModel { SearchFragmentViewModel(get<SearchInteractor>()) }
+    single { GifPreviewAdapter() }
+}
+
+private val real = named("real")
+private val mock = named("mock")
+
+val searchModule = module {
 
     single<SearchInteractor> { SearchInteractorImpl(get<HistoryInteractor>(), get<SearchRepository>()) }
     single<SearchRepository> {
@@ -47,6 +52,24 @@ val appModule = module {
             get<CoroutineDispatchers>()
         )
     }
+    single<DataSource<SearchRequest, SearchResult>>(real) {
+        NetworkDataSource(
+            GiphyApiProvider().api,
+            get<ConnectionChecker>(),
+            SearchResultApiConverter())
+    }
+    single<DataSource<SearchRequest, SearchResult>>(mock) { MockNetworkDataSource() }
+    single { SearchResultDatabase.create(androidContext()) }
+    single<CachedDataSource<SearchRequest, SearchResult>> {
+        LocalDataSource(
+            get<SearchResultDatabase>(),
+            SearchResultRoomConverter(),
+            get<CoroutineDispatchers>()
+        )
+    }
+}
+
+val historyModule = module {
     single<HistoryInteractor> { HistoryInteractorImpl(get<HistoryRepository>()) }
     single<HistoryRepository> {
         HistoryRepositoryImpl(
@@ -62,27 +85,9 @@ val appModule = module {
     }
     single { SearchHistoryDatabase.create(androidContext()) }
 
-    single<DataSource<SearchRequest, SearchResult>>(real) {
-        NetworkDataSource(
-            GiphyApiProvider().api,
-            get<ConnectionChecker>(),
-            get<SearchResultApiConverter>())
-    }
-    single<DataSource<SearchRequest, SearchResult>>(mock) { MockNetworkDataSource() }
-    single<CachedDataSource<SearchRequest, SearchResult>> {
-        LocalDataSource(
-            get<SearchResultDatabase>(),
-            get<SearchResultRoomConverter>(),
-            get<CoroutineDispatchers>()
-        )
-    }
-    single { SearchResultDatabase.create(androidContext()) }
-    single { SearchResultRoomConverter() }
-    single { SearchResultApiConverter() }
+}
 
+val utilsModule = module {
     single<CoroutineDispatchers> { CoroutineDispatchersImpl() }
-
     single { ConnectionChecker(androidContext()) }
-
-    single { GifPreviewAdapter() }
 }
