@@ -19,17 +19,31 @@ class SearchView @JvmOverloads constructor(
     private val binding: SearchViewBinding =
         SearchViewBinding.inflate(LayoutInflater.from(context), this, true)
 
+    private var listener: Listener? = null
+
+    fun setListener(listener: Listener?){
+        this.listener = listener
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         initListeners()
     }
 
     private fun initListeners() {
+        binding.queryInput.onFocusChangeListener = OnFocusChangeListener { view, focused ->
+            listener?.onActiveStateChangeListener(focused)
+        }
         binding.queryInput.doAfterTextChanged {
             viewModel.setCurrentQuery(it.toString())
         }
         binding.buttonSearch.setOnClickListener {
             viewModel.search()
+            binding.queryInput.clearFocus()
         }
+    }
+
+    interface Listener {
+        fun onActiveStateChangeListener(active: Boolean)
     }
 }

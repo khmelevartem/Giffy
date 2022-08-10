@@ -7,9 +7,11 @@
     tools:context=".presentation.MainActivity">
 
     <com.tubetoast.giffy.presentation.view.SearchView
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_tiny" />
+        android:layout_marginTop="@dimen/margin_tiny"
+        android:layout_marginHorizontal="@dimen/margin_xsmall" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"

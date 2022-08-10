@@ -3,6 +3,7 @@ package com.tubetoast.giffy.data.local
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.tubetoast.giffy.models.data.SearchResultRoomEntity
 
@@ -14,10 +15,10 @@ interface SearchResultsDao {
     @Query("SELECT * FROM ${SearchResultRoomEntity.TABLE_NAME} WHERE ${SearchResultRoomEntity.PARAM_QUERY} LIKE :query LIMIT 1")
     fun getByQuery(query: String): SearchResultRoomEntity?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(searchResult: SearchResultRoomEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg searchResults: SearchResultRoomEntity)
 
     @Delete

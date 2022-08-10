@@ -5,8 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = SearchRequestRoomEntity.TABLE_NAME)
 data class SearchRequestRoomEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
+    @PrimaryKey(autoGenerate = false)
     val query: String,
     val limit: Int,
 ) {

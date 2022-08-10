@@ -22,4 +22,6 @@
     <dimen name="preview_height_default">200dp</dimen>
     <dimen name="preview_margin_default">8dp</dimen>
 
+    <dimen name="search_back_radius">16dp</dimen>
+
 </resources>

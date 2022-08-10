@@ -10,7 +10,11 @@ interface HistoryInteractor {
     /**
      * Получить последние запросы
      *
-     * @param number количество запросов, 0 - все доступные
+     * @param number количество запросов, [UNLIMITED] - все доступные
      */
-    suspend fun getLast(number: Int = 0): List<SearchRequest>
+    suspend fun getLast(number: Int = 5): List<SearchRequest>
+
+    companion object {
+        const val UNLIMITED = 0
+    }
 }

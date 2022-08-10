@@ -25,6 +25,8 @@ import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.presentation.fragments.content.ContentAdapter
 import com.tubetoast.giffy.presentation.fragments.content.ContentFragmentViewModel
+import com.tubetoast.giffy.presentation.fragments.searchdetails.SearchDetailsAdapter
+import com.tubetoast.giffy.presentation.fragments.searchdetails.SearchDetailsFragmentViewModel
 import com.tubetoast.giffy.presentation.view.SearchViewModel
 import com.tubetoast.giffy.utils.ConnectionChecker
 import com.tubetoast.giffy.utils.CoroutineDispatchers
@@ -37,8 +39,10 @@ import org.koin.dsl.module
 
 val appModule = module {
     viewModel { ContentFragmentViewModel(get<SearchInteractor>()) }
+    viewModel { SearchDetailsFragmentViewModel(get<SearchInteractor>(), get<HistoryInteractor>()) }
     viewModel { SearchViewModel(get<SearchInteractor>()) }
     single { ContentAdapter() }
+    single { SearchDetailsAdapter() }
 }
 
 private val real = named("real")
