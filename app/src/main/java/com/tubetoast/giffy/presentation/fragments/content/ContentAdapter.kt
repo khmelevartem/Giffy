@@ -1,4 +1,4 @@
-package com.tubetoast.giffy.presentation.view
+package com.tubetoast.giffy.presentation.fragments.content
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,38 +6,38 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tubetoast.giffy.databinding.ItemBannerBinding
 import com.tubetoast.giffy.databinding.ItemGifPreviewContentBinding
 import com.tubetoast.giffy.databinding.ItemGifPreviewShimmerBinding
-import com.tubetoast.giffy.models.presentation.UIItem
-import com.tubetoast.giffy.models.presentation.ViewTypes
+import com.tubetoast.giffy.models.presentation.ContentItem
+import com.tubetoast.giffy.models.presentation.ContentViewTypes
 
-class GifPreviewAdapter : RecyclerView.Adapter<BaseViewHolder>() {
+class ContentAdapter : RecyclerView.Adapter<BaseContentViewHolder>() {
 
-    private val content: MutableList<UIItem> = mutableListOf()
+    private val content: MutableList<ContentItem> = mutableListOf()
 
     override fun getItemViewType(position: Int) = content[position].viewType
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            ViewTypes.CONTENT -> GifPreviewContentViewHolder(
+            ContentViewTypes.CONTENT -> GifPreviewContentViewHolder(
                 ItemGifPreviewContentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
-            ViewTypes.SHIMMER -> GifPreviewShimmerViewHolder(
+            ContentViewTypes.SHIMMER -> GifPreviewShimmerViewHolder(
                 ItemGifPreviewShimmerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
-            ViewTypes.BANNER -> BannerViewHolder(
+            ContentViewTypes.BANNER -> BannerViewHolder(
                 ItemBannerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
             else -> throw IllegalArgumentException("unknown view type")
         }
 
-    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseContentViewHolder, position: Int) {
         holder.setContent(content[position])
     }
 
     override fun getItemCount() = content.size
 
-    fun setContent(uiItems: List<UIItem>) {
+    fun setContent(contentItems: List<ContentItem>) {
         content.clear()
-        content.addAll(uiItems)
+        content.addAll(contentItems)
         notifyDataSetChanged() //TODO("DiffUtil")
     }
 }

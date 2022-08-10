@@ -1,15 +1,15 @@
-package com.tubetoast.giffy.presentation.viewmodel
+package com.tubetoast.giffy.presentation.fragments.content
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.giffy.domain.SearchInteractor
 import com.tubetoast.giffy.models.data.NoContentException
 import com.tubetoast.giffy.models.data.NoInternetException
-import com.tubetoast.giffy.models.domain.SearchResult
+import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.models.presentation.Banner
 import com.tubetoast.giffy.models.presentation.Banners
 import com.tubetoast.giffy.models.presentation.GifPreview
-import com.tubetoast.giffy.models.presentation.UIItem
+import com.tubetoast.giffy.models.presentation.ContentItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,21 +18,21 @@ import kotlinx.coroutines.launch
 
 class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewModel(), Banner.BannerListener {
 
-    val content: StateFlow<List<UIItem>>
+    val content: StateFlow<List<ContentItem>>
         get() = _content.asStateFlow().also {
             observeInteractor()
         }
-    private val _content = MutableStateFlow<List<UIItem>>(
+    private val _content = MutableStateFlow<List<ContentItem>>(
         listOf(Banners.NotStarted(this))
     )
 
     private fun observeInteractor() {
         viewModelScope.launch {
-            interactor.searchResult.collectLatest { result ->
+            interactor.searchState.collectLatest { result ->
                 when (result) {
-                    is SearchResult.Loading -> showShimmers()
-                    is SearchResult.ListSearchResult -> showContent(result)
-                    is SearchResult.SearchError -> showBanner(result)
+                    is SearchState.Loading -> showShimmers()
+                    is SearchState.Success -> showContent(result)
+                    is SearchState.Error -> showBanner(result)
                 }
             }
         }
@@ -42,12 +42,12 @@ class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewM
         _content.value = List(DEFAULT_SHIMMERS_COUNT) { GifPreview.Shimmer }
     }
 
-    private fun showContent(result: SearchResult.ListSearchResult) {
-        _content.value = result.images.map { GifPreview.Content(it) }
+    private fun showContent(state: SearchState.Success) {
+        _content.value = state.images.map { GifPreview.Content(it) }
     }
 
-    private fun showBanner(result: SearchResult.SearchError) {
-        when (result.exception) {
+    private fun showBanner(state: SearchState.Error) {
+        when (state.exception) {
             is NoInternetException -> _content.value = listOf(
                 Banners.NoInternet(this)
             )

@@ -22,26 +22,23 @@ import com.tubetoast.giffy.domain.SearchInteractor
 import com.tubetoast.giffy.domain.SearchInteractorImpl
 import com.tubetoast.giffy.domain.SearchRepository
 import com.tubetoast.giffy.models.domain.SearchRequest
-import com.tubetoast.giffy.models.domain.SearchResult
-import com.tubetoast.giffy.presentation.view.GifPreviewAdapter
-import com.tubetoast.giffy.presentation.view.MainActivity
-import com.tubetoast.giffy.presentation.viewmodel.ContentFragmentViewModel
-import com.tubetoast.giffy.presentation.viewmodel.SearchViewModel
+import com.tubetoast.giffy.models.domain.SearchState
+import com.tubetoast.giffy.presentation.fragments.content.ContentAdapter
+import com.tubetoast.giffy.presentation.fragments.content.ContentFragmentViewModel
+import com.tubetoast.giffy.presentation.view.SearchViewModel
 import com.tubetoast.giffy.utils.ConnectionChecker
 import com.tubetoast.giffy.utils.CoroutineDispatchers
 import com.tubetoast.giffy.utils.CoroutineDispatchersImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
 
 val appModule = module {
     viewModel { ContentFragmentViewModel(get<SearchInteractor>()) }
     viewModel { SearchViewModel(get<SearchInteractor>()) }
-    single { GifPreviewAdapter() }
+    single { ContentAdapter() }
 }
 
 private val real = named("real")
@@ -52,20 +49,20 @@ val searchModule = module {
     single<SearchInteractor> { SearchInteractorImpl(get<HistoryInteractor>(), get<SearchRepository>()) }
     single<SearchRepository> {
         SearchRepositoryImpl(
-            get<DataSource<SearchRequest, SearchResult>>(real),
-            get<CachedDataSource<SearchRequest, SearchResult>>(),
+            get<DataSource<SearchRequest, SearchState>>(real),
+            get<CachedDataSource<SearchRequest, SearchState>>(),
             get<CoroutineDispatchers>()
         )
     }
-    single<DataSource<SearchRequest, SearchResult>>(real) {
+    single<DataSource<SearchRequest, SearchState>>(real) {
         NetworkDataSource(
             GiphyApiProvider().api,
             get<ConnectionChecker>(),
             SearchResultApiConverter())
     }
-    single<DataSource<SearchRequest, SearchResult>>(mock) { MockNetworkDataSource() }
+    single<DataSource<SearchRequest, SearchState>>(mock) { MockNetworkDataSource() }
     single { SearchResultDatabase.create(androidContext()) }
-    single<CachedDataSource<SearchRequest, SearchResult>> {
+    single<CachedDataSource<SearchRequest, SearchState>> {
         LocalDataSource(
             get<SearchResultDatabase>(),
             SearchResultRoomConverter(),

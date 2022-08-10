@@ -5,22 +5,22 @@ import androidx.room.TypeConverter
 import com.tubetoast.giffy.models.data.SearchResultRoomEntity
 import com.tubetoast.giffy.models.domain.Gif
 import com.tubetoast.giffy.models.domain.SearchRequest
-import com.tubetoast.giffy.models.domain.SearchResult
+import com.tubetoast.giffy.models.domain.SearchState
 
 class SearchResultRoomConverter {
 
-    fun convert(request: SearchRequest, result: SearchResult): SearchResultRoomEntity? =
-        if (result is SearchResult.ListSearchResult) {
+    fun convert(request: SearchRequest, state: SearchState): SearchResultRoomEntity? =
+        if (state is SearchState.Success) {
             SearchResultRoomEntity(
                 request.query,
-                result.images.map { it.url }
+                state.images.map { it.url }
             )
         } else {
             null
         }
 
-    fun reverse(roomEntity: SearchResultRoomEntity): SearchResult =
-        SearchResult.ListSearchResult(
+    fun reverse(roomEntity: SearchResultRoomEntity): SearchState =
+        SearchState.Success(
             roomEntity.gifs?.map { Gif(it) }.orEmpty()
         )
 

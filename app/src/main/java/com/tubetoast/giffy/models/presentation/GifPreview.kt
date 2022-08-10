@@ -2,9 +2,9 @@ package com.tubetoast.giffy.models.presentation
 
 import com.tubetoast.giffy.models.domain.Gif
 
-sealed class GifPreview(viewType: Int) : UIItem(viewType) {
+sealed class GifPreview(viewType: Int) : ContentItem(viewType) {
 
-    data class Content(val gif: Gif) : GifPreview(ViewTypes.CONTENT)
+    data class Content(val gif: Gif) : GifPreview(ContentViewTypes.CONTENT)
 
-    object Shimmer : GifPreview(ViewTypes.SHIMMER)
+    object Shimmer : GifPreview(ContentViewTypes.SHIMMER)
 }

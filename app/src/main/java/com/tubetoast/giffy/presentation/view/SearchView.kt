@@ -8,7 +8,6 @@ import androidx.annotation.AttrRes
 import androidx.core.widget.doAfterTextChanged
 import com.tubetoast.giffy.databinding.SearchViewBinding
 import com.tubetoast.giffy.presentation.utils.activityViewModel
-import com.tubetoast.giffy.presentation.viewmodel.SearchViewModel
 
 class SearchView @JvmOverloads constructor(
     context: Context,

@@ -4,16 +4,16 @@ import com.tubetoast.giffy.data.DataSource
 import com.tubetoast.giffy.models.data.NoContentException
 import com.tubetoast.giffy.models.data.NoInternetException
 import com.tubetoast.giffy.models.domain.SearchRequest
-import com.tubetoast.giffy.models.domain.SearchResult
+import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.utils.ConnectionChecker
 
 class NetworkDataSource(
     private val api: GiphyApi,
     private val connectionChecker: ConnectionChecker,
     private val converter: SearchResultApiConverter,
-) : DataSource<SearchRequest, SearchResult> {
+) : DataSource<SearchRequest, SearchState> {
 
-    override suspend fun get(request: SearchRequest): SearchResult? =
+    override suspend fun get(request: SearchRequest): SearchState? =
         if (!connectionChecker.isConnected()) {
             throw NoInternetException
         } else {

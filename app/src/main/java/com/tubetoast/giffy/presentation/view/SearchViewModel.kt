@@ -1,4 +1,4 @@
-package com.tubetoast.giffy.presentation.viewmodel
+package com.tubetoast.giffy.presentation.view
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Giffy">
         <activity
-            android:name="com.tubetoast.giffy.presentation.view.MainActivity"
+            android:name="com.tubetoast.giffy.presentation.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

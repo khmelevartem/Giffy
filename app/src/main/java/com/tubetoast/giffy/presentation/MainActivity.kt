@@ -1,8 +1,9 @@
-package com.tubetoast.giffy.presentation.view
+package com.tubetoast.giffy.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tubetoast.giffy.R
+import com.tubetoast.giffy.presentation.fragments.content.ContentFragment
 
 class MainActivity : AppCompatActivity() {
 

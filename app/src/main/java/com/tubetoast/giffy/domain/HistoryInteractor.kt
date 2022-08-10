@@ -1,11 +1,11 @@
 package com.tubetoast.giffy.domain
 
 import com.tubetoast.giffy.models.domain.SearchRequest
-import com.tubetoast.giffy.models.domain.SearchResult
+import com.tubetoast.giffy.models.domain.SearchState
 
 interface HistoryInteractor {
 
-    fun addToHistory(request: SearchRequest, result: SearchResult)
+    fun addToHistory(request: SearchRequest, state: SearchState)
 
     /**
      * Получить последние запросы
