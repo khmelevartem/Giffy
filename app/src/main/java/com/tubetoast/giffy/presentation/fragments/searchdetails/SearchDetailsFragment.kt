@@ -37,14 +37,9 @@ class SearchDetailsFragment : RecyclerFragment() {
     private fun initObservers() {
         lifecycleScope.launchWhenStarted {
             viewModel.getHistory().collectLatest { requests ->
-                searchDetailsAdapter.setHistory(requests)
+                searchDetailsAdapter.setDetails(requests)
             }
         }
-        // lifecycleScope.launchWhenStarted {
-        //     viewModel.filters.collectLatest { filters ->
-        //         searchDetailsAdapter.setFilters(filters)
-        //     }
-        // }
     }
 
     companion object {

@@ -7,23 +7,23 @@ import com.tubetoast.giffy.databinding.ItemBannerBinding
 import com.tubetoast.giffy.databinding.ItemGifPreviewContentBinding
 import com.tubetoast.giffy.databinding.ItemGifPreviewShimmerBinding
 import com.tubetoast.giffy.models.presentation.ContentItem
-import com.tubetoast.giffy.models.presentation.ContentViewTypes
+import com.tubetoast.giffy.models.presentation.ContentViewType
 
 class ContentAdapter : RecyclerView.Adapter<BaseContentViewHolder>() {
 
     private val content: MutableList<ContentItem> = mutableListOf()
 
-    override fun getItemViewType(position: Int) = content[position].viewType
+    override fun getItemViewType(position: Int) = content[position].viewType.ordinal
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            ContentViewTypes.CONTENT -> GifPreviewContentViewHolder(
+            ContentViewType.CONTENT.ordinal -> GifPreviewContentViewHolder(
                 ItemGifPreviewContentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
-            ContentViewTypes.SHIMMER -> GifPreviewShimmerViewHolder(
+            ContentViewType.SHIMMER.ordinal -> GifPreviewShimmerViewHolder(
                 ItemGifPreviewShimmerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
-            ContentViewTypes.BANNER -> BannerViewHolder(
+            ContentViewType.BANNER.ordinal -> BannerViewHolder(
                 ItemBannerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
             else -> throw IllegalArgumentException("unknown view type")

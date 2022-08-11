@@ -9,7 +9,7 @@ sealed class Banner(
     @StringRes val buttonTitle: Int? = null,
     private val listener: BannerListener? = null,
     actionType: String? = null,
-) : ContentItem(ContentViewTypes.BANNER) {
+) : ContentItem(ContentViewType.BANNER) {
 
     val action: (() -> Unit)? =
         if (actionType.isNullOrBlank() || listener == null) {
