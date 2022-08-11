@@ -11,6 +11,7 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.tubetoast.giffy.databinding.SearchViewBinding
 import com.tubetoast.giffy.presentation.utils.activityViewModel
+import com.tubetoast.giffy.presentation.utils.hideKeyboard
 
 class SearchView @JvmOverloads constructor(
     context: Context,
@@ -49,6 +50,7 @@ class SearchView @JvmOverloads constructor(
         binding.buttonSearch.setOnClickListener {
             viewModel.search()
             binding.queryInput.clearFocus()
+            hideKeyboard()
         }
     }
 }

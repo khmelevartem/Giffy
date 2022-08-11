@@ -4,6 +4,7 @@ import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.utils.CoroutineDispatchers
 import com.tubetoast.giffy.utils.SupervisorScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,6 +30,7 @@ class SearchInteractorImpl(
     }
 
     override fun initSearch(request: SearchRequest) {
+        scope.coroutineContext.cancelChildren()
         scope.launch {
             _searchState.emit(SearchState.Loading(request))
             val result = repository.search(request)

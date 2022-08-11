@@ -3,6 +3,7 @@ package com.tubetoast.giffy.presentation.utils
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
@@ -37,3 +38,9 @@ val View.viewModelStoreOwner: ViewModelStoreOwner
         ?: throw IllegalStateException("Cannot find viewModelStoreOwner from $this. " +
             "Probably, you are calling this function at inappropriate time or in inappropriate place. " +
             "Use only after attached to window")
+
+
+fun View.hideKeyboard()  {
+    val imm = rootView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    imm?.hideSoftInputFromWindow(rootView.windowToken, 0)
+}

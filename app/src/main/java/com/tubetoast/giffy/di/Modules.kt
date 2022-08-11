@@ -60,7 +60,7 @@ val searchModule = module {
     }
     single<SearchRepository> {
         SearchRepositoryImpl(
-            get<DataSource<SearchRequest, SearchState>>(mock),
+            get<DataSource<SearchRequest, SearchState>>(real),
             get<CachedDataSource<SearchRequest, SearchState>>(),
             get<CoroutineDispatchers>()
         )

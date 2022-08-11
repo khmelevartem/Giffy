@@ -36,8 +36,10 @@ class ContentAdapter : RecyclerView.Adapter<BaseContentViewHolder>() {
     override fun getItemCount() = content.size
 
     fun setContent(contentItems: List<ContentItem>) {
-        content.clear()
-        content.addAll(contentItems)
-        notifyDataSetChanged() //TODO("DiffUtil")
+        if (content != contentItems) {
+            content.clear()
+            content.addAll(contentItems)
+            notifyDataSetChanged()
+        }
     }
 }

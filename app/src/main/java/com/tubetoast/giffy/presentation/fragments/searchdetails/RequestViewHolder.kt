@@ -3,6 +3,7 @@ package com.tubetoast.giffy.presentation.fragments.searchdetails
 import com.tubetoast.giffy.databinding.ItemRequestBinding
 import com.tubetoast.giffy.domain.RequestActions
 import com.tubetoast.giffy.models.domain.SearchRequest
+import com.tubetoast.giffy.presentation.utils.hideKeyboard
 
 class RequestViewHolder(
     private val binding: ItemRequestBinding,
@@ -15,6 +16,7 @@ class RequestViewHolder(
         }
         binding.root.setOnClickListener {
             requestActions.repeatRequest(request)
+            it.hideKeyboard()
         }
     }
 }

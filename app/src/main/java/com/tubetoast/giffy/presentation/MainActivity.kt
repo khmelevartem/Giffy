@@ -31,22 +31,18 @@ class MainActivity : AppCompatActivity() {
                     else -> Unit
                 }
             }
-
         }
     }
 
     private fun showSearchDetails() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, SearchDetailsFragment.newInstance())
-            .addToBackStack(SearchDetailsFragment.TAG)
+            .addToBackStack(ContentFragment.TAG)
             .setReorderingAllowed(true)
             .commit()
     }
 
     private fun hideSearchDetails() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, ContentFragment.newInstance())
-            .setReorderingAllowed(true)
-            .commit()
+        supportFragmentManager.popBackStack()
     }
 }
