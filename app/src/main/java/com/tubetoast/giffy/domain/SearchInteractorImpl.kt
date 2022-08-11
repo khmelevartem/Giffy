@@ -2,29 +2,38 @@ package com.tubetoast.giffy.domain
 
 import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchState
+import com.tubetoast.giffy.utils.CoroutineDispatchers
+import com.tubetoast.giffy.utils.SupervisorScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 
 class SearchInteractorImpl(
     private val historyInteractor: HistoryInteractor,
     private val repository: SearchRepository,
+    dispatchers: CoroutineDispatchers,
 ) : SearchInteractor {
 
-    override val searchState: SharedFlow<SearchState> get() = _searchResult.asSharedFlow()
-    private val _searchResult =
+    private val scope = SupervisorScope(dispatchers.default)
+
+    override val searchState: SharedFlow<SearchState> get() = _searchState.asSharedFlow()
+    private val _searchState =
         MutableSharedFlow<SearchState>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-    override suspend fun initSearch(query: String) {
-        _searchResult.emit(SearchState.Loading)
-        val request = SearchRequest(query, DEFAULT_LIMIT)
-        val result = repository.search(request)
-        _searchResult.emit(result)
-        historyInteractor.addToHistory(request, result)
+    override fun startFormingSearch() {
+        scope.launch {
+            _searchState.emit(SearchState.Forming)
+        }
     }
 
-    companion object {
-        const val DEFAULT_LIMIT = 10
+    override fun initSearch(request: SearchRequest) {
+        scope.launch {
+            _searchState.emit(SearchState.Loading(request))
+            val result = repository.search(request)
+            _searchState.emit(result)
+            historyInteractor.addToHistory(request, result)
+        }
     }
 }

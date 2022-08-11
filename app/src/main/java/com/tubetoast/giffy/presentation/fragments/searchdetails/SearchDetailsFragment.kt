@@ -36,7 +36,7 @@ class SearchDetailsFragment : RecyclerFragment() {
 
     private fun initObservers() {
         lifecycleScope.launchWhenStarted {
-            viewModel.history.collectLatest { requests ->
+            viewModel.getHistory().collectLatest { requests ->
                 searchDetailsAdapter.setHistory(requests)
             }
         }

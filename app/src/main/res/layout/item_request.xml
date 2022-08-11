@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/request_text"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_medium">
+
+    <TextView
+        android:id="@+id/request_text"
+        android:layout_width="@dimen/fill"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/request_delete"
+        app:tint="@color/grey_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:src="?attr/actionModeCutDrawable" />
+
+</LinearLayout>

@@ -33,6 +33,7 @@ class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewM
                     is SearchState.Loading -> showShimmers()
                     is SearchState.Success -> showContent(result)
                     is SearchState.Error -> showBanner(result)
+                    SearchState.Forming -> Unit
                 }
             }
         }

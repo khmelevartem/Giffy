@@ -18,6 +18,7 @@ import com.tubetoast.giffy.data.network.SearchResultApiConverter
 import com.tubetoast.giffy.domain.HistoryInteractor
 import com.tubetoast.giffy.domain.HistoryInteractorImpl
 import com.tubetoast.giffy.domain.HistoryRepository
+import com.tubetoast.giffy.domain.RequestActions
 import com.tubetoast.giffy.domain.SearchInteractor
 import com.tubetoast.giffy.domain.SearchInteractorImpl
 import com.tubetoast.giffy.domain.SearchRepository
@@ -36,13 +37,13 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-
 val appModule = module {
     viewModel { ContentFragmentViewModel(get<SearchInteractor>()) }
     viewModel { SearchDetailsFragmentViewModel(get<SearchInteractor>(), get<HistoryInteractor>()) }
     viewModel { SearchViewModel(get<SearchInteractor>()) }
     single { ContentAdapter() }
-    single { SearchDetailsAdapter() }
+    single { SearchDetailsAdapter(get<RequestActions>()) }
+    single { RequestActions(get<HistoryInteractor>(), get<SearchInteractor>()) }
 }
 
 private val real = named("real")
@@ -50,10 +51,16 @@ private val mock = named("mock")
 
 val searchModule = module {
 
-    single<SearchInteractor> { SearchInteractorImpl(get<HistoryInteractor>(), get<SearchRepository>()) }
+    single<SearchInteractor> {
+        SearchInteractorImpl(
+            get<HistoryInteractor>(),
+            get<SearchRepository>(),
+            get<CoroutineDispatchers>()
+        )
+    }
     single<SearchRepository> {
         SearchRepositoryImpl(
-            get<DataSource<SearchRequest, SearchState>>(real),
+            get<DataSource<SearchRequest, SearchState>>(mock),
             get<CachedDataSource<SearchRequest, SearchState>>(),
             get<CoroutineDispatchers>()
         )

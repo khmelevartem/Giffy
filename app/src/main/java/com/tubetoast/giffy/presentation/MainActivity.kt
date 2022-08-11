@@ -1,15 +1,19 @@
 package com.tubetoast.giffy.presentation
 
 import android.os.Bundle
-import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.tubetoast.giffy.R
+import com.tubetoast.giffy.domain.SearchInteractor
+import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.presentation.fragments.content.ContentFragment
 import com.tubetoast.giffy.presentation.fragments.searchdetails.SearchDetailsFragment
-import com.tubetoast.giffy.presentation.view.SearchView
+import kotlinx.coroutines.flow.collectLatest
+import org.koin.android.ext.android.inject
 
-class MainActivity : AppCompatActivity(), SearchView.Listener {
+class MainActivity : AppCompatActivity() {
+
+    private val searchInteractor: SearchInteractor by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,11 +23,16 @@ class MainActivity : AppCompatActivity(), SearchView.Listener {
                 .add(R.id.fragment_container, ContentFragment.newInstance(), ContentFragment.TAG)
                 .commit()
         }
-        findViewById<SearchView>(R.id.search_view).setListener(this)
-    }
+        lifecycleScope.launchWhenStarted {
+            searchInteractor.searchState.collectLatest {
+                when (it) {
+                    is SearchState.Forming -> showSearchDetails()
+                    is SearchState.Loading -> hideSearchDetails()
+                    else -> Unit
+                }
+            }
 
-    override fun onActiveStateChangeListener(active: Boolean) {
-        if(active) showSearchDetails() else hideSearchDetails()
+        }
     }
 
     private fun showSearchDetails() {
@@ -40,5 +49,4 @@ class MainActivity : AppCompatActivity(), SearchView.Listener {
             .setReorderingAllowed(true)
             .commit()
     }
-
 }

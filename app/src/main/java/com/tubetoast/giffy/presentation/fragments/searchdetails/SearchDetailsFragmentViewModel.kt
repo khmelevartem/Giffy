@@ -6,24 +6,18 @@ import com.tubetoast.giffy.domain.HistoryInteractor
 import com.tubetoast.giffy.domain.SearchInteractor
 import com.tubetoast.giffy.models.domain.SearchRequest
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
 
 class SearchDetailsFragmentViewModel(
     private val searchInteractor: SearchInteractor,
     private val historyInteractor: HistoryInteractor,
 ) : ViewModel() {
 
-    private val _history = MutableStateFlow<List<SearchRequest>>(emptyList())
-    val history get() = _history.asStateFlow()
-
     private val _filters = MutableStateFlow<List<String>>(emptyList())
     val filters get() = _filters.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            _history.value = historyInteractor.getLast()
-        }
-    }
-
+    suspend fun getHistory(): StateFlow<List<SearchRequest>> =
+        historyInteractor.getLast().stateIn(viewModelScope)
 }

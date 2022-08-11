@@ -3,9 +3,12 @@ package com.tubetoast.giffy.presentation.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View.OnFocusChangeListener
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.tubetoast.giffy.databinding.SearchViewBinding
 import com.tubetoast.giffy.presentation.utils.activityViewModel
 
@@ -19,20 +22,26 @@ class SearchView @JvmOverloads constructor(
     private val binding: SearchViewBinding =
         SearchViewBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private var listener: Listener? = null
-
-    fun setListener(listener: Listener?){
-        this.listener = listener
-    }
-
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         initListeners()
+        initObservers()
+    }
+
+    private fun initObservers() {
+        findViewTreeLifecycleOwner()?.lifecycleScope?.launchWhenResumed {
+            viewModel.forceQuery.collect {
+                binding.queryInput.apply {
+                    setText(it)
+                    clearFocus()
+                }
+            }
+        }
     }
 
     private fun initListeners() {
         binding.queryInput.onFocusChangeListener = OnFocusChangeListener { view, focused ->
-            listener?.onActiveStateChangeListener(focused)
+            if (focused) viewModel.startFormingRequest()
         }
         binding.queryInput.doAfterTextChanged {
             viewModel.setCurrentQuery(it.toString())
@@ -41,9 +50,5 @@ class SearchView @JvmOverloads constructor(
             viewModel.search()
             binding.queryInput.clearFocus()
         }
-    }
-
-    interface Listener {
-        fun onActiveStateChangeListener(active: Boolean)
     }
 }

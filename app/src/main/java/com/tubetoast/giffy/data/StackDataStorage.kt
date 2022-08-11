@@ -2,15 +2,17 @@ package com.tubetoast.giffy.data
 
 abstract class StackDataStorage<V> : DataStorage<Unit, List<V>> {
 
-    final override suspend fun get(request: Unit): List<V>? = get(UNLIMITED)
+    final override suspend fun get(request: Unit): List<V> = peek(UNLIMITED)
 
-    final override suspend fun put(request: Unit, value: List<V>) = putAll(value)
+    final override suspend fun put(request: Unit, value: List<V>) = pushAll(value)
 
-    abstract suspend fun get(limit: Int): List<V>?
+    abstract suspend fun peek(limit: Int): List<V>
 
-    abstract suspend fun put(vararg values: V)
+    abstract suspend fun push(vararg values: V)
 
-    abstract suspend fun putAll(values: List<V>)
+    abstract suspend fun pushAll(values: List<V>)
+
+    abstract suspend fun delete(value: V)
 
     companion object {
         const val UNLIMITED = 0

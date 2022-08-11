@@ -4,8 +4,7 @@ import com.tubetoast.giffy.data.CachedDataSource
 import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.utils.CoroutineDispatchers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import com.tubetoast.giffy.utils.SupervisorScope
 import kotlinx.coroutines.launch
 
 class LocalDataSource(
@@ -14,7 +13,7 @@ class LocalDataSource(
     dispatchers: CoroutineDispatchers
 ) : CachedDataSource<SearchRequest, SearchState> {
 
-    private val scope = CoroutineScope(SupervisorJob() + dispatchers.io)
+    private val scope = SupervisorScope(dispatchers.io)
 
     override suspend fun getOrCreate(request: SearchRequest, creator: suspend () -> SearchState): SearchState =
         get(request) ?: creator().also { result ->
