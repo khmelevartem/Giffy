@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Giffy</string>
 
-    <string name="button_search">search</string>
-
     <string name="button_not_started">try it now</string>
     <string name="description_not_started">Have not tried our cool new stuff yet?</string>
 
@@ -16,4 +14,8 @@
 
     <string name="button_nothing_found">search another</string>
     <string name="description_nothing_found">Sorry, we have nothing like what you asked</string>
+
+    <string name="option_save_title">Save</string>
+    <string name="option_share_url_title">Share as url</string>
+    <string name="option_share_file_title">Share as file</string>
 </resources>

@@ -9,7 +9,9 @@ import com.tubetoast.giffy.databinding.ItemGifPreviewShimmerBinding
 import com.tubetoast.giffy.models.presentation.ContentItem
 import com.tubetoast.giffy.models.presentation.ContentViewType
 
-class ContentAdapter : RecyclerView.Adapter<BaseContentViewHolder>() {
+class ContentAdapter(
+    private val gifPreviewActions: GifPreviewActions
+) : RecyclerView.Adapter<BaseContentViewHolder>() {
 
     private val content: MutableList<ContentItem> = mutableListOf()
 
@@ -18,7 +20,8 @@ class ContentAdapter : RecyclerView.Adapter<BaseContentViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
             ContentViewType.CONTENT.ordinal -> GifPreviewContentViewHolder(
-                ItemGifPreviewContentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ItemGifPreviewContentBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                gifPreviewActions
             )
             ContentViewType.SHIMMER.ordinal -> GifPreviewShimmerViewHolder(
                 ItemGifPreviewShimmerBinding.inflate(LayoutInflater.from(parent.context), parent, false)

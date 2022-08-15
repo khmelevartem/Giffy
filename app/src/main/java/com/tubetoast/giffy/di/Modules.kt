@@ -26,6 +26,7 @@ import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.presentation.fragments.content.ContentAdapter
 import com.tubetoast.giffy.presentation.fragments.content.ContentFragmentViewModel
+import com.tubetoast.giffy.presentation.fragments.content.GifPreviewActions
 import com.tubetoast.giffy.presentation.fragments.searchdetails.SearchDetailsAdapter
 import com.tubetoast.giffy.presentation.fragments.searchdetails.SearchDetailsFragmentViewModel
 import com.tubetoast.giffy.presentation.view.SearchViewModel
@@ -41,7 +42,8 @@ val appModule = module {
     viewModel { ContentFragmentViewModel(get<SearchInteractor>()) }
     viewModel { SearchDetailsFragmentViewModel(get<SearchInteractor>(), get<HistoryInteractor>()) }
     viewModel { SearchViewModel(get<SearchInteractor>()) }
-    single { ContentAdapter() }
+    single { ContentAdapter(get<GifPreviewActions>()) }
+    single { GifPreviewActions() }
     single { SearchDetailsAdapter(get<RequestActions>()) }
     single { RequestActions(get<HistoryInteractor>(), get<SearchInteractor>()) }
 }

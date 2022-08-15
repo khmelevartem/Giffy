@@ -5,5 +5,7 @@
         <attr name="shimmerStart" format="color" />
         <attr name="shimmerEnd" format="color" />
 
+        <attr name="searchBack" format="color" />
+
     </declare-styleable>
 </resources>

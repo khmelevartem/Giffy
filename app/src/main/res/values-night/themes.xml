@@ -12,5 +12,7 @@
 
         <item name="shimmerStart">@color/grey_darker</item>
         <item name="shimmerEnd">@color/grey_dark</item>
+
+        <item name="searchBack">@color/grey_darker</item>
     </style>
 </resources>

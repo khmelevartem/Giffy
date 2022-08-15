@@ -1,7 +1,13 @@
 package com.tubetoast.giffy.presentation
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.tubetoast.giffy.R
 import com.tubetoast.giffy.domain.SearchInteractor
@@ -45,4 +51,5 @@ class MainActivity : AppCompatActivity() {
     private fun hideSearchDetails() {
         supportFragmentManager.popBackStack()
     }
+
 }
