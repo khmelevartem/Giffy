@@ -21,4 +21,7 @@ data class DataItemEntity @JsonCreator constructor(
 
     @param:JsonProperty("images")
     val images: ImagesEntity,
+
+    @param:JsonProperty("source_tld")
+    val sourceDomain: String,
 )

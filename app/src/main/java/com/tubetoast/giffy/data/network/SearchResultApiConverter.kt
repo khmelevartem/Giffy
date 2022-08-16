@@ -9,7 +9,14 @@ class SearchResultApiConverter {
 
     fun convert(from: SearchResultEntity?): SearchState? =
         from?.data?.takeIf { it.isNotEmpty() }?.let { data ->
-            val images = data.map { Gif(Uri.parse(it.images.original.gifUrl)) }
+            val images = data.map {
+                Gif(
+                    url = Uri.parse(it.images.original.gifUrl),
+                    title = it.title,
+                    type = it.type,
+                    source = it.sourceDomain
+                )
+            }
             SearchState.Success(images)
         }
 }

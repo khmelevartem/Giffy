@@ -14,14 +14,14 @@ interface SearchResultsDao {
     @Query("SELECT * FROM $TABLE_NAME")
     fun getAll(): List<SearchResultRoomEntity>
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $PARAM_QUERY LIKE :query LIMIT 1")
-    fun getByQuery(query: String): SearchResultRoomEntity?
+    @Query("SELECT * FROM $TABLE_NAME WHERE $PARAM_QUERY LIKE :query")
+    fun getByQuery(query: String): List<SearchResultRoomEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(searchResult: SearchResultRoomEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg searchResults: SearchResultRoomEntity)
+    fun insertAll(searchResults: List<SearchResultRoomEntity>)
 
     @Delete
     fun delete(searchResult: SearchResultRoomEntity)

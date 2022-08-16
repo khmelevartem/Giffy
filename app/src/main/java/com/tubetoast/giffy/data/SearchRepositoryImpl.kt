@@ -16,7 +16,7 @@ class SearchRepositoryImpl(
     override suspend fun search(request: SearchRequest): SearchState = try {
         withContext(dispatchers.io) {
             localCache.getOrCreate(request) {
-                networkSource.get(request) ?: throw NoContentException
+                networkSource.get(it) ?: throw NoContentException
             }
         }
     } catch (e: Exception) {

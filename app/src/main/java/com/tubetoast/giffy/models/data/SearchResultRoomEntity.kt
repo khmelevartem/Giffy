@@ -11,13 +11,17 @@ import com.tubetoast.giffy.data.local.SearchResultRoomConverter
 @TypeConverters(SearchResultRoomConverter::class)
 data class SearchResultRoomEntity(
 
-    @PrimaryKey
     @ColumnInfo(name = PARAM_QUERY)
     val searchQuery: String,
 
-    val gifs: List<Uri>?,
+    val url: Uri,
+    val title: String,
+    val type: String,
+    val source: String,
 
-    ) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null,
+) {
     companion object {
         const val TABLE_NAME = "search_results"
         const val PARAM_QUERY = "search_query"

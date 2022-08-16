@@ -10,6 +10,9 @@ data class ImagesEntity @JsonCreator constructor(
     @param:JsonProperty("original")
     val original: GifEntity,
 
+    @param:JsonProperty("preview_gif")
+    val preview: GifEntity?,
+
     @param:JsonProperty("fixed_height")
     val fixedHeight: GifEntity,
 

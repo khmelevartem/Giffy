@@ -10,20 +10,24 @@ import kotlinx.coroutines.launch
 class LocalDataSource(
     private val database: SearchResultDatabase,
     private val converter: SearchResultRoomConverter,
-    dispatchers: CoroutineDispatchers
+    dispatchers: CoroutineDispatchers,
 ) : CachedDataSource<SearchRequest, SearchState> {
 
     private val scope = SupervisorScope(dispatchers.io)
 
-    override suspend fun getOrCreate(request: SearchRequest, creator: suspend () -> SearchState): SearchState =
-        get(request) ?: creator().also { result ->
-            converter.convert(request, result)?.let { dbEntity ->
-                scope.launch { database.searchResults().insert(dbEntity) }
+    override suspend fun getOrCreate(request: SearchRequest, creator: suspend (SearchRequest) -> SearchState) =
+        get(request) ?: creator(request).also { result ->
+            if (result is SearchState.Success) {
+                result.images.map { converter.convert(request, it) }
+                    .let { dbEntities ->
+                        scope.launch { database.searchResults().insertAll(dbEntities) }
+                    }
             }
         }
 
     override suspend fun get(request: SearchRequest): SearchState? =
-        database.searchResults().getByQuery(request.query)?.let {
+        database.searchResults().getByQuery(request.query).map {
             converter.reverse(it)
-        }
+        }.takeIf { it.isNotEmpty() }
+            ?.let { SearchState.Success(it) }
 }
