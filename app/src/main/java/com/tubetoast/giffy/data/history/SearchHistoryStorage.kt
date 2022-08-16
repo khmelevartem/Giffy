@@ -11,7 +11,7 @@ class SearchHistoryStorage(
     override suspend fun peek(limit: Int): List<SearchRequest> =
         historyDatabase.historyDao().run {
             if (limit == UNLIMITED) getAll() else get(limit)
-        }.map { converter.reverse(it) }.reversed()
+        }.map { converter.reverse(it) }
 
     override suspend fun push(vararg values: SearchRequest) {
         values.forEach {
@@ -25,6 +25,6 @@ class SearchHistoryStorage(
     }
 
     override suspend fun delete(value: SearchRequest) {
-        historyDatabase.historyDao().delete(converter.convert(value))
+        historyDatabase.historyDao().delete(converter.convert(value).query)
     }
 }

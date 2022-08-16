@@ -11,7 +11,7 @@ import com.tubetoast.giffy.data.local.SearchResultRoomConverter
 @TypeConverters(SearchResultRoomConverter::class)
 data class SearchResultRoomEntity(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey
     @ColumnInfo(name = PARAM_QUERY)
     val searchQuery: String,
 
