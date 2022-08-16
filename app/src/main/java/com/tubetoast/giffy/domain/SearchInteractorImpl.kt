@@ -4,6 +4,7 @@ import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.utils.CoroutineDispatchers
 import com.tubetoast.giffy.utils.SupervisorScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,5 +38,11 @@ class SearchInteractorImpl(
             _searchState.emit(result)
             historyInteractor.addToHistory(request, result)
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun reset() {
+        scope.coroutineContext.cancelChildren()
+        _searchState.resetReplayCache()
     }
 }

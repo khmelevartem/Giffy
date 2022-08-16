@@ -14,13 +14,13 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     init {
         viewModelScope.launch {
             interactor.searchState.collect {
-                if (it is SearchState.Loading) forceQuery(it.request)
+                if (it is SearchState.Loading) loadingQuery(it.request)
             }
         }
     }
 
-    val forceQuery get() = _forceQuery.asSharedFlow()
-    private val _forceQuery = MutableSharedFlow<String>()
+    val loadingQuery get() = _loadingQuery.asSharedFlow()
+    private val _loadingQuery = MutableSharedFlow<String>()
 
     private var query = ""
 
@@ -36,9 +36,9 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
         interactor.initSearch(request)
     }
 
-    private fun forceQuery(request: SearchRequest) {
+    private fun loadingQuery(request: SearchRequest) {
         viewModelScope.launch {
-            _forceQuery.emit(request.query)
+            _loadingQuery.emit(request.query)
         }
     }
 

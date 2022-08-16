@@ -10,5 +10,7 @@ interface SearchInteractor {
 
     fun initSearch(request: SearchRequest)
 
+    fun reset()
+
     val searchState: Flow<SearchState>
 }

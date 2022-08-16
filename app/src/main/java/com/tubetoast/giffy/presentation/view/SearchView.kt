@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View.OnFocusChangeListener
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.core.widget.doAfterTextChanged
@@ -31,26 +32,31 @@ class SearchView @JvmOverloads constructor(
 
     private fun initObservers() {
         findViewTreeLifecycleOwner()?.lifecycleScope?.launchWhenResumed {
-            viewModel.forceQuery.collect {
+            viewModel.loadingQuery.collect { query ->
                 binding.queryInput.apply {
-                    setText(it)
+                    if(text.toString() != query) setText(query)
                     clearFocus()
+                    hideKeyboard()
                 }
             }
         }
     }
 
     private fun initListeners() {
-        binding.queryInput.onFocusChangeListener = OnFocusChangeListener { view, focused ->
-            if (focused) viewModel.startFormingRequest()
-        }
-        binding.queryInput.doAfterTextChanged {
-            viewModel.setCurrentQuery(it.toString())
+        binding.queryInput.apply {
+            onFocusChangeListener = OnFocusChangeListener { view, focused ->
+                if (focused) viewModel.startFormingRequest()
+            }
+            doAfterTextChanged {
+                viewModel.setCurrentQuery(it.toString())
+            }
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH)  viewModel.search()
+                actionId == EditorInfo.IME_ACTION_SEARCH
+            }
         }
         binding.buttonSearch.setOnClickListener {
             viewModel.search()
-            binding.queryInput.clearFocus()
-            hideKeyboard()
         }
     }
 }

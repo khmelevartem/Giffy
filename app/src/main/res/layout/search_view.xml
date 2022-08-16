@@ -13,6 +13,7 @@
         android:layout_height="@dimen/edit_text_height"
         android:layout_weight="1"
         android:inputType="text"
+        android:imeOptions="actionSearch"
         android:maxLines="1" />
 
     <ImageButton

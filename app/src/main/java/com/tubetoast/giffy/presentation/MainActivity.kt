@@ -1,13 +1,8 @@
 package com.tubetoast.giffy.presentation
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.lifecycle.lifecycleScope
 import com.tubetoast.giffy.R
 import com.tubetoast.giffy.domain.SearchInteractor
@@ -43,13 +38,17 @@ class MainActivity : AppCompatActivity() {
     private fun showSearchDetails() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, SearchDetailsFragment.newInstance())
-            .addToBackStack(ContentFragment.TAG)
+            .addToBackStack(SearchDetailsFragment.TAG)
             .setReorderingAllowed(true)
             .commit()
     }
 
     private fun hideSearchDetails() {
-        supportFragmentManager.popBackStack()
+        supportFragmentManager.popBackStack(SearchDetailsFragment.TAG, POP_BACK_STACK_INCLUSIVE)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+          searchInteractor.reset()
+    }
 }
