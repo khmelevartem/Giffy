@@ -43,7 +43,7 @@ val appModule = module {
     viewModel { SearchDetailsFragmentViewModel(get<SearchInteractor>(), get<HistoryInteractor>()) }
     viewModel { SearchViewModel(get<SearchInteractor>()) }
     single { ContentAdapter(get<GifPreviewActions>()) }
-    single { GifPreviewActions() }
+    single { GifPreviewActions(get<CoroutineDispatchers>()) }
     single { SearchDetailsAdapter(get<RequestActions>()) }
     single { RequestActions(get<HistoryInteractor>(), get<SearchInteractor>()) }
 }
