@@ -8,8 +8,10 @@ import android.os.Build
 import android.provider.MediaStore
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.tubetoast.giffy.R
+import com.tubetoast.giffy.data.saved.SavedGifsRepository
 import com.tubetoast.giffy.models.domain.Gif
 import com.tubetoast.giffy.utils.CoroutineDispatchers
 import com.tubetoast.giffy.utils.SupervisorScope
@@ -17,7 +19,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileInputStream
 
-class GifPreviewActions(private val dispatchers: CoroutineDispatchers) {
+class GifPreviewActions(
+    private val dispatchers: CoroutineDispatchers,
+    private val savedGifsRepository: SavedGifsRepository,
+) {
 
     private val uiScope = SupervisorScope(dispatchers.main)
 
@@ -63,30 +68,29 @@ class GifPreviewActions(private val dispatchers: CoroutineDispatchers) {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun save(gif: Gif, context: Context): Uri = withContext(dispatchers.io) {
-        val imageDetails = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, "giffy")
-            put(MediaStore.Images.Media.MIME_TYPE, "image/gif")
-        }
-        val resolver = context.contentResolver
-        val imageContentUri = resolver.insert(imagesCollection(), imageDetails)
-            ?: throw IllegalStateException("can't create file")
-        resolver.openOutputStream(imageContentUri, "w")?.use { out ->
-            val file = Glide.with(context)
-                .asFile()
-                .load(gif.url)
-                .submit()
-                .get()
-            val input = FileInputStream(file)
-            val outputByte = ByteArray(1024)
-            var readLength = input.read(outputByte)
-            while (readLength != -1) {
-                out.write(outputByte, 0, readLength)
-                readLength = input.read(outputByte)
+        savedGifsRepository.getOrCreate(gif.url) {
+            val imageDetails = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, gif.title)
+                put(MediaStore.Images.Media.TITLE, "${gif.title} ${gif.source}")
+                put(MediaStore.Images.Media.MIME_TYPE, "image/gif") //todo
             }
-            input.close()
+            val resolver = context.contentResolver
+            val imageContentUri = resolver.insert(imagesCollection(), imageDetails)
+                ?: throw IllegalStateException("Can't create file")
+            resolver.openOutputStream(imageContentUri, "w")?.use { output ->
+                FileInputStream(getAsFile(context, gif)).use { input ->
+                    val outputByte = ByteArray(1024)
+                    var readLength = input.read(outputByte)
+                    while (readLength != -1) {
+                        output.write(outputByte, 0, readLength)
+                        readLength = input.read(outputByte)
+                    }
+                }
+            }
+            imageDetails.clear()
+            uiScope.launch { Toast.makeText(context, "Saved to gallery", Toast.LENGTH_SHORT).show() }
+            imageContentUri
         }
-        imageDetails.clear()
-        imageContentUri
     }
 
     private fun imagesCollection() =
@@ -95,4 +99,11 @@ class GifPreviewActions(private val dispatchers: CoroutineDispatchers) {
         } else {
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         }
+
+    private fun getAsFile(context: Context, gif: Gif) =
+        Glide.with(context)
+            .asFile()
+            .load(gif.url)
+            .submit()
+            .get()
 }

@@ -1,5 +1,6 @@
 package com.tubetoast.giffy.presentation.fragments.content
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.giffy.domain.SearchInteractor
@@ -8,8 +9,8 @@ import com.tubetoast.giffy.models.data.NoInternetException
 import com.tubetoast.giffy.models.domain.SearchState
 import com.tubetoast.giffy.models.presentation.Banner
 import com.tubetoast.giffy.models.presentation.Banners
-import com.tubetoast.giffy.models.presentation.GifPreview
 import com.tubetoast.giffy.models.presentation.ContentItem
+import com.tubetoast.giffy.models.presentation.GifPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,6 +49,7 @@ class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewM
     }
 
     private fun showBanner(state: SearchState.Error) {
+        Log.e("Content fragment", state.exception.message.toString())
         when (state.exception) {
             is NoInternetException -> _content.value = listOf(
                 Banners.NoInternet(this)
