@@ -1,5 +1,9 @@
 package com.tubetoast.giffy.models.data
 
-object NoInternetException : RuntimeException()
+abstract class DataException(message: String? = null) : RuntimeException(message)
 
-object NoContentException : RuntimeException()
+object NoInternetException : DataException()
+
+object NoContentException : DataException()
+
+data class NetworkException(val statusCode: Int) : DataException()

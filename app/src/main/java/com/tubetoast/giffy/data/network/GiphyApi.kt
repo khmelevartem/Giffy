@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface GiphyApi {
 
     @GET("gifs/search")
-    suspend fun searchGiffs(
+    suspend fun search(
         @Query("q") query: String,
         @Query("limit") limit: Int,
     ): Response<SearchResultEntity?>
