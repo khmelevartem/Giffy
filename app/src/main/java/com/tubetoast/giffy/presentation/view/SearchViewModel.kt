@@ -14,7 +14,11 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     init {
         viewModelScope.launch {
             interactor.searchState.collect {
-                if (it is SearchState.Loading) loadingQuery(it.request)
+                when (it) {
+                    is SearchState.Loading -> _loadingQuery.emit(it.request.query)
+                    is SearchState.Forming -> _formingQuery.emit(it.needsReset)
+                    else -> Unit
+                }
             }
         }
     }
@@ -22,24 +26,21 @@ class SearchViewModel(private val interactor: SearchInteractor) : ViewModel() {
     val loadingQuery get() = _loadingQuery.asSharedFlow()
     private val _loadingQuery = MutableSharedFlow<String>()
 
-    private var query = ""
+    val formingQuery get() = _formingQuery.asSharedFlow()
+    private val _formingQuery = MutableSharedFlow<Boolean>()
 
-    fun startFormingRequest() {
-        interactor.startFormingSearch()
-    }
+    private var query = ""
 
     fun setCurrentQuery(newQuery: String) {
         query = newQuery
     }
 
-    fun search(request: SearchRequest = SearchRequest(query, DEFAULT_LIMIT)) {
-        interactor.initSearch(request)
+    fun startFormingRequest(needsReset: Boolean = false) {
+        interactor.startFormingSearch(needsReset)
     }
 
-    private fun loadingQuery(request: SearchRequest) {
-        viewModelScope.launch {
-            _loadingQuery.emit(request.query)
-        }
+    fun search() {
+        interactor.initSearch(SearchRequest(query, DEFAULT_LIMIT))
     }
 
     companion object {

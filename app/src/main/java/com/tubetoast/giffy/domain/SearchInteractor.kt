@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchInteractor {
 
-    fun startFormingSearch()
+    fun startFormingSearch(cancelPrevious: Boolean = false)
 
     fun initSearch(request: SearchRequest)
 

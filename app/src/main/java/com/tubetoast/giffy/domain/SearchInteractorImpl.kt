@@ -24,9 +24,10 @@ class SearchInteractorImpl(
     private val _searchState =
         MutableSharedFlow<SearchState>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-    override fun startFormingSearch() {
+    override fun startFormingSearch(cancelPrevious: Boolean) {
+        if (cancelPrevious) reset()
         scope.launch {
-            _searchState.emit(SearchState.Forming)
+            _searchState.emit(SearchState.Forming(needsReset = cancelPrevious))
         }
     }
 

@@ -7,7 +7,6 @@ import com.tubetoast.giffy.domain.SearchInteractor
 import com.tubetoast.giffy.models.data.NoContentException
 import com.tubetoast.giffy.models.data.NoInternetException
 import com.tubetoast.giffy.models.domain.SearchState
-import com.tubetoast.giffy.models.presentation.Banner
 import com.tubetoast.giffy.models.presentation.Banners
 import com.tubetoast.giffy.models.presentation.ContentItem
 import com.tubetoast.giffy.models.presentation.GifPreview
@@ -17,14 +16,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewModel(), Banner.BannerListener {
+class ContentFragmentViewModel(
+    private val interactor: SearchInteractor,
+    val bannerActions: BannerActions,
+) : ViewModel() {
 
     val content: StateFlow<List<ContentItem>>
         get() = _content.asStateFlow().also {
             observeInteractor()
         }
     private val _content = MutableStateFlow<List<ContentItem>>(
-        listOf(Banners.NotStarted(this))
+        listOf(Banners.NotStarted(bannerActions))
     )
 
     private fun observeInteractor() {
@@ -34,7 +36,7 @@ class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewM
                     is SearchState.Loading -> showShimmers()
                     is SearchState.Success -> showContent(result)
                     is SearchState.Error -> showBanner(result)
-                    SearchState.Forming -> Unit
+                    is SearchState.Forming -> Unit
                 }
             }
         }
@@ -52,23 +54,14 @@ class ContentFragmentViewModel(private val interactor: SearchInteractor) : ViewM
         Log.e("Content fragment", state.exception.message.toString())
         when (state.exception) {
             is NoInternetException -> _content.value = listOf(
-                Banners.NoInternet(this)
+                Banners.NoInternet(bannerActions)
             )
             is NoContentException -> _content.value = listOf(
-                Banners.NoContent(this)
+                Banners.NoContent(bannerActions)
             )
             else -> _content.value = listOf(
                 Banners.UnknownError()
             )
-        }
-    }
-
-    override fun onBannerAction(type: String) {
-        when (type) {
-            Banners.NoContent.ACTION_TYPE -> Unit // TODO(focus on search input field)
-            Banners.NotStarted.ACTION_TYPE -> Unit // TODO(focus on search input field)
-            Banners.NoInternet.ACTION_TYPE -> Unit //TODO(search)
-            Banners.UnknownError.ACTION_TYPE -> Unit //TODO(finish activity)
         }
     }
 

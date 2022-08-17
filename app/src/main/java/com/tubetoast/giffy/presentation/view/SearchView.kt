@@ -8,11 +8,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import com.tubetoast.giffy.databinding.SearchViewBinding
 import com.tubetoast.giffy.presentation.utils.activityViewModel
 import com.tubetoast.giffy.presentation.utils.hideKeyboard
+import com.tubetoast.giffy.presentation.utils.launchWhenResumed
 
 class SearchView @JvmOverloads constructor(
     context: Context,
@@ -31,12 +30,20 @@ class SearchView @JvmOverloads constructor(
     }
 
     private fun initObservers() {
-        findViewTreeLifecycleOwner()?.lifecycleScope?.launchWhenResumed {
+        launchWhenResumed {
             viewModel.loadingQuery.collect { query ->
                 binding.queryInput.apply {
-                    if(text.toString() != query) setText(query)
+                    if (text.toString() != query) setText(query)
                     clearFocus()
                     hideKeyboard()
+                }
+            }
+        }
+        launchWhenResumed {
+            viewModel.formingQuery.collect { reset ->
+                binding.queryInput.apply {
+                    if (reset) text.clear()
+                    requestFocus()
                 }
             }
         }
@@ -44,14 +51,14 @@ class SearchView @JvmOverloads constructor(
 
     private fun initListeners() {
         binding.queryInput.apply {
-            onFocusChangeListener = OnFocusChangeListener { view, focused ->
+            onFocusChangeListener = OnFocusChangeListener { _, focused ->
                 if (focused) viewModel.startFormingRequest()
             }
             doAfterTextChanged {
                 viewModel.setCurrentQuery(it.toString())
             }
             setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_SEARCH)  viewModel.search()
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) viewModel.search()
                 actionId == EditorInfo.IME_ACTION_SEARCH
             }
         }

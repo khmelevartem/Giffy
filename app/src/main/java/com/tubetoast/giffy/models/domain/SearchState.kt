@@ -2,7 +2,7 @@ package com.tubetoast.giffy.models.domain
 
 sealed class SearchState {
 
-    object Forming : SearchState()
+    data class Forming(val needsReset: Boolean) : SearchState()
 
     data class Loading(val request: SearchRequest) : SearchState()
 

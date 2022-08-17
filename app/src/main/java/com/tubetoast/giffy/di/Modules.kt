@@ -27,6 +27,7 @@ import com.tubetoast.giffy.domain.SearchInteractorImpl
 import com.tubetoast.giffy.domain.SearchRepository
 import com.tubetoast.giffy.models.domain.SearchRequest
 import com.tubetoast.giffy.models.domain.SearchState
+import com.tubetoast.giffy.presentation.fragments.content.BannerActions
 import com.tubetoast.giffy.presentation.fragments.content.ContentAdapter
 import com.tubetoast.giffy.presentation.fragments.content.ContentFragmentViewModel
 import com.tubetoast.giffy.presentation.fragments.content.GifPreviewActions
@@ -42,9 +43,10 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
-    viewModel { ContentFragmentViewModel(get<SearchInteractor>()) }
+    viewModel { ContentFragmentViewModel(get<SearchInteractor>(), get<BannerActions>()) }
     viewModel { SearchDetailsFragmentViewModel(get<SearchInteractor>(), get<HistoryInteractor>()) }
     viewModel { SearchViewModel(get<SearchInteractor>()) }
+    single { BannerActions(get<CoroutineDispatchers>()) }
     single { ContentAdapter(get<GifPreviewActions>()) }
     single { GifPreviewActions(get<CoroutineDispatchers>(), get<SavedGifsCache>()) }
     single<SavedGifsCache> { SavedGifsCacheDBImpl(get<SavedGifsDatabase>(), androidContext()) }
