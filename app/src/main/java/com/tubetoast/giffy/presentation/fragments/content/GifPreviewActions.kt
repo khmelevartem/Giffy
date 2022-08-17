@@ -11,7 +11,7 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.tubetoast.giffy.R
-import com.tubetoast.giffy.data.saved.SavedGifsRepository
+import com.tubetoast.giffy.data.saved.SavedGifsCache
 import com.tubetoast.giffy.models.domain.Gif
 import com.tubetoast.giffy.utils.CoroutineDispatchers
 import com.tubetoast.giffy.utils.SupervisorScope
@@ -21,7 +21,7 @@ import java.io.FileInputStream
 
 class GifPreviewActions(
     private val dispatchers: CoroutineDispatchers,
-    private val savedGifsRepository: SavedGifsRepository,
+    private val savedGifsCache: SavedGifsCache,
 ) {
 
     private val uiScope = SupervisorScope(dispatchers.main)
@@ -68,7 +68,7 @@ class GifPreviewActions(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun save(gif: Gif, context: Context): Uri = withContext(dispatchers.io) {
-        savedGifsRepository.getOrCreate(gif.url) {
+        savedGifsCache.getOrCreate(gif.url) {
             val imageDetails = ContentValues().apply {
                 put(MediaStore.Images.Media.DISPLAY_NAME, gif.title)
                 put(MediaStore.Images.Media.TITLE, "${gif.title} ${gif.source}")

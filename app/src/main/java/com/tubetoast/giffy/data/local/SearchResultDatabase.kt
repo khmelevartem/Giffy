@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.tubetoast.giffy.models.data.SearchResultRoomEntity
+import com.tubetoast.giffy.models.data.SearchResultRoomEntity.Companion.TABLE_NAME
 
 @Database(entities = [SearchResultRoomEntity::class], version = 1, exportSchema = false)
 abstract class SearchResultDatabase : RoomDatabase() {
@@ -13,7 +14,8 @@ abstract class SearchResultDatabase : RoomDatabase() {
 
     companion object {
 
-        fun create(context: Context) = Room.databaseBuilder(context, SearchResultDatabase::class.java, "search_results")
-            .build()
+        fun create(context: Context) =
+            Room.databaseBuilder(context, SearchResultDatabase::class.java, TABLE_NAME)
+                .build()
     }
 }

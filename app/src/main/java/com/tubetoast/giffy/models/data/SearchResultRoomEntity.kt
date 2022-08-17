@@ -5,10 +5,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.tubetoast.giffy.data.local.SearchResultRoomConverter
+import com.tubetoast.giffy.utils.UriStringConverter
 
 @Entity(tableName = SearchResultRoomEntity.TABLE_NAME)
-@TypeConverters(SearchResultRoomConverter::class)
+@TypeConverters(UriStringConverter::class)
 data class SearchResultRoomEntity(
 
     @ColumnInfo(name = PARAM_QUERY)

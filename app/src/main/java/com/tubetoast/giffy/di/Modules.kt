@@ -15,7 +15,9 @@ import com.tubetoast.giffy.data.network.GiphyApiProvider
 import com.tubetoast.giffy.data.network.MockNetworkDataSource
 import com.tubetoast.giffy.data.network.NetworkDataSource
 import com.tubetoast.giffy.data.network.SearchResultApiConverter
-import com.tubetoast.giffy.data.saved.SavedGifsRepositoryInMemoryImpl
+import com.tubetoast.giffy.data.saved.SavedGifsCache
+import com.tubetoast.giffy.data.saved.SavedGifsCacheDBImpl
+import com.tubetoast.giffy.data.saved.SavedGifsDatabase
 import com.tubetoast.giffy.domain.HistoryInteractor
 import com.tubetoast.giffy.domain.HistoryInteractorImpl
 import com.tubetoast.giffy.domain.HistoryRepository
@@ -44,7 +46,9 @@ val appModule = module {
     viewModel { SearchDetailsFragmentViewModel(get<SearchInteractor>(), get<HistoryInteractor>()) }
     viewModel { SearchViewModel(get<SearchInteractor>()) }
     single { ContentAdapter(get<GifPreviewActions>()) }
-    single { GifPreviewActions(get<CoroutineDispatchers>(), SavedGifsRepositoryInMemoryImpl()) }
+    single { GifPreviewActions(get<CoroutineDispatchers>(), get<SavedGifsCache>()) }
+    single<SavedGifsCache> { SavedGifsCacheDBImpl(get<SavedGifsDatabase>(), androidContext()) }
+    single { SavedGifsDatabase.create(androidContext()) }
     single { SearchDetailsAdapter(get<RequestActions>()) }
     single { RequestActions(get<HistoryInteractor>(), get<SearchInteractor>()) }
 }
